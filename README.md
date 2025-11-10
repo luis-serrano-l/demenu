@@ -43,152 +43,16 @@ demenu/
         └── menu.html       # Menu display partial
 ```
 
-## Prerequisites
-
-- [Hugo](https://gohugo.io/) installed (version 0.100.0 or later recommended)
-  - Check installation: `hugo version`
-  - Install via package manager or download from [Hugo releases](https://github.com/gohugoio/hugo/releases)
-- Git installed
-- GitHub account (for GitHub Pages deployment)
-
-## Setup Instructions
-
-### 1. Install Hugo
-
-**On Linux:**
-```bash
-# Using snap
-sudo snap install hugo
-
-# Or download from GitHub releases
-wget https://github.com/gohugoio/hugo/releases/download/v0.121.0/hugo_0.121.0_linux-amd64.deb
-sudo dpkg -i hugo_0.121.0_linux-amd64.deb
-```
-
-### 2. Verify Installation
-
-```bash
-hugo version
-```
-
-### 3. Initialize Hugo Site
-
-If you're starting from scratch, first initialize a Hugo site:
-
-```bash
-# Navigate to your project directory
-cd /path/to/demenu
-
-# Initialize Hugo site (if not already done)
-hugo new site . --force
-```
-
-**Note:** The `--force` flag is only needed if the directory already contains files. This will create the proper Hugo directory structure.
-
-### 4. Set Up Project Files
-
-After initializing Hugo, copy or create the following files:
-- `hugo.toml` - Configuration file (or `config.toml` in older Hugo versions)
-- `content/` - Your content files
-- `layouts/` - Template files
-- `static/` - CSS, JS, and other static assets
-- `data/` - Data files (like menu.json)
-- `.github/workflows/` - GitHub Actions workflow for deployment
-
-## Build Steps
-
-### Local Development
-
-1. **Start the Hugo development server:**
-   ```bash
-   hugo server --buildDrafts
-   ```
-   Or to include draft content:
-   ```bash
-   hugo server -D
-   ```
-   The site will be available at `http://localhost:1313`
-
-2. **Build the site for production:**
-   ```bash
-   hugo --minify
-   ```
-   This creates a `public/` directory with the static site.
-
-3. **Preview the production build:**
-   ```bash
-   hugo server --environment production
-   ```
-
-### Production Build
-
-```bash
-# Clean previous build
-rm -rf public/
-
-# Build with minification
-hugo --minify
-
-# The public/ directory contains your static site
-```
-
 ## GitHub Pages Deployment
 
-### Option 1: Using GitHub Actions (Recommended)
+The GitHub Actions workflow automatically:
+- Builds the Hugo site
+- Deploys to GitHub Pages
+- Makes your site available at `https://YOUR_USERNAME.github.io/demenu/`
 
-1. **Push your code to GitHub:**
-   ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/demenu.git
-   git push -u origin main
-   ```
-
-2. **The GitHub Actions workflow will automatically:**
-   - Build the Hugo site
-   - Deploy to the `gh-pages` branch
-   - Make your site available at `https://YOUR_USERNAME.github.io/demenu/`
-
-3. **Enable GitHub Pages:**
-   - Go to your repository Settings → Pages
-   - Source: Deploy from a branch
-   - Branch: `gh-pages` / `/ (root)`
-
-### Option 2: Manual Deployment
-
-1. **Build the site:**
-   ```bash
-   hugo --minify
-   ```
-
-2. **Push to gh-pages branch:**
-   ```bash
-   cd public
-   git init
-   git add .
-   git commit -m "Deploy to GitHub Pages"
-   git branch -M gh-pages
-   git remote add origin https://github.com/YOUR_USERNAME/demenu.git
-   git push -u origin gh-pages
-   ```
-
-### Configure Base URL
-
-**For Local Development:**
-The `hugo.toml` file is configured with `baseURL = "/"` for local development. This allows the site to work correctly at `http://localhost:1313/`.
-
-**For Production (GitHub Pages):**
-The GitHub Actions workflow automatically sets the correct `baseURL` using the GitHub Pages URL. However, if you need to manually build for production, you can:
-
-1. Update `hugo.production.toml` with your GitHub Pages URL:
-   ```toml
-   baseURL = "https://YOUR_USERNAME.github.io/demenu/"
-   ```
-
-2. Build using the production config:
-   ```bash
-   hugo --config hugo.production.toml --minify
-   ```
-
-**Note:** The GitHub Actions workflow automatically handles the baseURL, so you don't need to manually update it for automated deployments.
+**To enable GitHub Pages:**
+1. Go to your repository Settings → Pages
+2. Source: Select "GitHub Actions"
 
 ## Development Workflow
 
@@ -197,12 +61,7 @@ The GitHub Actions workflow automatically sets the correct `baseURL` using the G
    - Edit `content/` files for pages
    - Edit `layouts/` for template changes
 
-2. **Preview changes:**
-   ```bash
-   hugo server -D
-   ```
-
-3. **Commit and push:**
+2. **Commit and push:**
    ```bash
    git add .
    git commit -m "Update menu items"
@@ -279,24 +138,6 @@ The component automatically handles all optional fields and displays them only w
 - **Templates:** Edit files in `layouts/`
 - **Menu Data:** Edit `data/menu.json`
 
-## Troubleshooting
-
-### Hugo not found
-- Ensure Hugo is in your PATH
-- Try `which hugo` to locate the binary
-
-### Build errors
-- Check Hugo version: `hugo version`
-- Ensure all required directories exist
-- Check `hugo.toml` (or `config.toml`) for syntax errors
-- Make sure you initialized the site with `hugo new site .`
-
-### GitHub Pages not updating
-- Check GitHub Actions workflow status
-- Verify `baseURL` in `hugo.toml` (or `config.toml`) matches your repository path
-- Ensure `gh-pages` branch is set as the source in repository settings
-
 ## License
 
 This project is open source and available for personal or commercial use.
-
