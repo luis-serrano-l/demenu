@@ -2,7 +2,59 @@
 document.addEventListener('DOMContentLoaded', function() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const menuCategories = document.querySelectorAll('.menu-category');
+    const sidebar = document.querySelector('.menu-sidebar');
+    const sidebarToggles = document.querySelectorAll('.sidebar-toggle');
+    const sidebarClose = document.querySelector('.sidebar-close');
+    const sidebarOverlay = document.querySelector('.sidebar-overlay');
     
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+    
+    // Toggle sidebar on mobile
+    function openSidebar() {
+        if (sidebar && isMobile()) {
+            sidebar.classList.add('open');
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.add('active');
+            }
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    
+    function closeSidebar() {
+        if (sidebar) {
+            sidebar.classList.remove('open');
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.remove('active');
+            }
+            document.body.style.overflow = '';
+        }
+    }
+    
+    function toggleSidebar() {
+        if (sidebar && isMobile()) {
+            if (sidebar.classList.contains('open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        }
+    }
+    
+    sidebarToggles.forEach(toggle => {
+        toggle.addEventListener('click', toggleSidebar);
+    });
+    
+    if (sidebarClose) {
+        sidebarClose.addEventListener('click', closeSidebar);
+    }
+    
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+    
+    // Close sidebar when clicking a filter button on mobile
     filterButtons.forEach(button => {
         button.addEventListener('click', function() {
             const category = this.getAttribute('data-category');
@@ -25,13 +77,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
+            // Close sidebar on mobile after selecting a category
+            if (isMobile()) {
+                closeSidebar();
+            }
+            
             // Scroll to category after filtering
             setTimeout(() => {
                 if (category !== 'all') {
                     const targetCategory = document.querySelector(`.menu-category[data-category="${category}"]:not(.hidden)`);
                     if (targetCategory) {
-                        const isMobile = window.innerWidth <= 768;
-                        const offset = isMobile ? 20 : 100;
+                        const offset = isMobile() ? 20 : 100;
                         const categoryTop = targetCategory.getBoundingClientRect().top + window.pageYOffset;
                         window.scrollTo({
                             top: categoryTop - offset,
@@ -42,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const menuContent = document.querySelector('.menu-content');
                     if (menuContent) {
                         const menuContentTop = menuContent.getBoundingClientRect().top + window.pageYOffset;
-                        const offset = window.innerWidth <= 768 ? 20 : 100;
+                        const offset = isMobile() ? 20 : 100;
                         window.scrollTo({
                             top: menuContentTop - offset,
                             behavior: 'smooth'
@@ -53,5 +109,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, 50);
         });
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            closeSidebar();
+        }
     });
 });

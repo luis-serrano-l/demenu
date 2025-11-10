@@ -1,11 +1,10 @@
 {{- define "main" }}
     <div class="container">
-        <h1>{{ .Title }}</h1>
-        {{ .Content }}
         {{- if eq .Section "menu" }}
             {{- partial "menu.html" . }}
-        {{- else if eq .Section "meals" }}
-            {{- partial "meals-list.html" . }}
+        {{- else }}
+            <h1>{{ .Title }}</h1>
+            {{ .Content }}
         {{- end }}
     </div>
 {{- end }}

@@ -20,14 +20,6 @@ buildFuture = false
 
 [menu]
   [[menu.main]]
-    name = "Home"
-    url = "/"
-    weight = 1
-  [[menu.main]]
     name = "Menu"
     url = "/menu/"
-    weight = 2
-  [[menu.main]]
-    name = "Meals"
-    url = "/meals/"
-    weight = 3
+    weight = 1

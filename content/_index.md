@@ -1,12 +1,9 @@
 ---
-title: "Home"
+title: "Menu"
 date: 2024-01-01
 draft: false
 ---
 
-# Welcome to {{< param "restaurantName" >}}
+# {{< param "menuTitle" >}}
 
-{{< param "tagline" >}}
-
-Visit our [Menu]({{< relref "menu" >}}) to see our delicious offerings!
-
+Explore our menu organized by categories.

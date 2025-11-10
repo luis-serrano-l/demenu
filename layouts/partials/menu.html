@@ -1,8 +1,17 @@
 {{ $menuData := .Site.Data.menu }}
 <div class="menu-container">
     {{- if $menuData.categories }}
+        <button class="sidebar-toggle sidebar-toggle-external" aria-label="Toggle categories">
+            <span class="toggle-icon">☰</span>
+        </button>
+        <div class="sidebar-overlay"></div>
         <div class="menu-sidebar">
-            <h3 class="sidebar-title">Categories</h3>
+            <div class="sidebar-header">
+                <button class="sidebar-toggle sidebar-toggle-internal" aria-label="Toggle categories">
+                    <span class="toggle-icon">☰</span>
+                </button>
+                <button class="sidebar-close" aria-label="Close sidebar">×</button>
+            </div>
             <div class="menu-filters">
                 <button class="filter-btn active" data-category="all">All</button>
                 {{- range $menuData.categories }}
