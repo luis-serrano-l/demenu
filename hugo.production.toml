@@ -4,7 +4,6 @@
 baseURL = "https://YOUR_USERNAME.github.io/demenu/"
 languageCode = "en-us"
 title = "Dynamic Restaurant Menu"
-theme = ""
 
 # Enable features
 enableRobotsTXT = true
