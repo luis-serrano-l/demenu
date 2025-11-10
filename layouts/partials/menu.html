@@ -1,0 +1,33 @@
+{{ $menuData := .Site.Data.menu }}
+<div class="menu-container">
+    {{- if $menuData.categories }}
+        <div class="menu-sidebar">
+            <h3 class="sidebar-title">Categories</h3>
+            <div class="menu-filters">
+                <button class="filter-btn active" data-category="all">All</button>
+                {{- range $menuData.categories }}
+                    <button class="filter-btn" data-category="{{ .id }}">{{ .name }}</button>
+                {{- end }}
+            </div>
+        </div>
+        <div class="menu-content">
+            <div class="menu-categories">
+                {{- range $menuData.categories }}
+                    <section class="menu-category" data-category="{{ .id }}">
+                        <h2 class="category-title">{{ .name }}</h2>
+                        {{- if .description }}
+                            <p class="category-description">{{ .description }}</p>
+                        {{- end }}
+                        <div class="menu-items">
+                            {{- range .items }}
+                                {{- partial "meal.html" . }}
+                            {{- end }}
+                        </div>
+                    </section>
+                {{- end }}
+            </div>
+        </div>
+    {{- else }}
+        <p>Menu data not available.</p>
+    {{- end }}
+</div>

@@ -1,0 +1,175 @@
+{
+  "categories": [
+    {
+      "id": "appetizers",
+      "name": "Appetizers",
+      "description": "Start your meal with our delicious appetizers",
+      "items": [
+        {
+          "name": "Bruschetta Trio",
+          "description": "Three varieties: classic tomato basil, roasted red pepper, and olive tapenade",
+          "price": 12.99
+        },
+        {
+          "name": "Crispy Calamari",
+          "description": "Golden fried squid rings served with marinara sauce and lemon aioli",
+          "price": 14.99
+        },
+        {
+          "name": "Spinach & Artichoke Dip",
+          "description": "Creamy blend of spinach, artichokes, and three cheeses, served with tortilla chips",
+          "price": 11.99
+        },
+        {
+          "name": "Chicken Wings",
+          "description": "Choice of buffalo, BBQ, or honey garlic. Served with celery sticks and blue cheese",
+          "price": 13.99
+        },
+        {
+          "name": "Stuffed Mushrooms",
+          "description": "Button mushrooms filled with herbed cream cheese and breadcrumbs",
+          "price": 10.99
+        }
+      ]
+    },
+    {
+      "id": "salads",
+      "name": "Salads",
+      "description": "Fresh and healthy salad options",
+      "items": [
+        {
+          "name": "Caesar Salad",
+          "description": "Crisp romaine lettuce with parmesan cheese, croutons, and classic Caesar dressing",
+          "price": 9.99
+        },
+        {
+          "name": "Greek Salad",
+          "description": "Mixed greens with feta cheese, olives, tomatoes, cucumbers, and red onion with Greek vinaigrette",
+          "price": 10.99
+        },
+        {
+          "name": "Garden Salad",
+          "description": "Fresh mixed greens with cherry tomatoes, carrots, cucumbers, and your choice of dressing",
+          "price": 8.99
+        },
+        {
+          "name": "Cobb Salad",
+          "description": "Mixed greens topped with grilled chicken, bacon, hard-boiled eggs, avocado, and blue cheese",
+          "price": 13.99
+        }
+      ]
+    },
+    {
+      "id": "main-courses",
+      "name": "Main Courses",
+      "description": "Our signature entrees",
+      "items": [
+        {
+          "name": "Grilled Salmon",
+          "description": "Atlantic salmon fillet grilled to perfection, served with roasted vegetables and lemon butter sauce",
+          "price": 24.99
+        },
+        {
+          "name": "Ribeye Steak",
+          "description": "12oz prime ribeye cooked to your preference, served with garlic mashed potatoes and seasonal vegetables",
+          "price": 32.99
+        },
+        {
+          "name": "Chicken Parmesan",
+          "description": "Breaded chicken breast topped with marinara sauce and mozzarella, served over pasta",
+          "price": 18.99
+        },
+        {
+          "name": "Beef Burger",
+          "description": "8oz angus beef patty with lettuce, tomato, onion, pickles, and your choice of cheese on a brioche bun",
+          "price": 15.99
+        },
+        {
+          "name": "Pasta Carbonara",
+          "description": "Creamy pasta with bacon, parmesan cheese, and fresh herbs",
+          "price": 16.99
+        },
+        {
+          "name": "Vegetarian Risotto",
+          "description": "Creamy arborio rice with seasonal vegetables, parmesan, and fresh herbs",
+          "price": 17.99
+        }
+      ]
+    },
+    {
+      "id": "desserts",
+      "name": "Desserts",
+      "description": "Sweet endings to your meal",
+      "items": [
+        {
+          "name": "Chocolate Lava Cake",
+          "description": "Warm chocolate cake with a molten center, served with vanilla ice cream",
+          "price": 8.99
+        },
+        {
+          "name": "New York Cheesecake",
+          "description": "Classic creamy cheesecake with berry compote",
+          "price": 7.99
+        },
+        {
+          "name": "Tiramisu",
+          "description": "Traditional Italian dessert with coffee-soaked ladyfingers and mascarpone",
+          "price": 8.99
+        },
+        {
+          "name": "Crème Brûlée",
+          "description": "Vanilla custard with caramelized sugar top",
+          "price": 7.99
+        },
+        {
+          "name": "Ice Cream Sundae",
+          "description": "Three scoops of vanilla ice cream with hot fudge, whipped cream, and a cherry",
+          "price": 6.99
+        }
+      ]
+    },
+    {
+      "id": "beverages",
+      "name": "Beverages",
+      "description": "Refreshing drinks to complement your meal",
+      "items": [
+        {
+          "name": "Fresh Lemonade",
+          "description": "House-made lemonade with fresh lemons",
+          "price": 3.99
+        },
+        {
+          "name": "Iced Tea",
+          "description": "Freshly brewed iced tea, sweetened or unsweetened",
+          "price": 3.49
+        },
+        {
+          "name": "Fresh Orange Juice",
+          "description": "Freshly squeezed orange juice",
+          "price": 4.99
+        },
+        {
+          "name": "Coffee",
+          "description": "Freshly brewed coffee, regular or decaf",
+          "price": 2.99
+        },
+        {
+          "name": "Espresso",
+          "description": "Single or double shot of espresso",
+          "price": 3.49
+        },
+        {
+          "name": "Cappuccino",
+          "description": "Espresso with steamed milk and foam",
+          "price": 4.49
+        },
+        {
+          "name": "Soft Drinks",
+          "description": "Coca-Cola, Sprite, Fanta, or Root Beer",
+          "price": 2.99
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,34 @@
+baseURL = "/"
+languageCode = "en-us"
+title = "Dynamic Restaurant Menu"
+theme = ""
+
+# Enable features
+enableRobotsTXT = true
+enableGitInfo = true
+enableEmoji = true
+
+# Build settings
+minify = false  # Set to true for production builds
+buildDrafts = false
+buildFuture = false
+
+# Menu configuration
+[params]
+  menuTitle = "Our Menu"
+  restaurantName = "Delicious Restaurant"
+  tagline = "Fresh ingredients, amazing flavors"
+
+[menu]
+  [[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    name = "Menu"
+    url = "/menu/"
+    weight = 2
+  [[menu.main]]
+    name = "Meals"
+    url = "/meals/"
+    weight = 3
