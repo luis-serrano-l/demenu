@@ -18,9 +18,10 @@ buildFuture = false
   restaurantName = "Delicious Restaurant"
   tagline = "Fresh ingredients, amazing flavors"
   # Bot API URL for fetching user-specific menus
-  # This is a development default - change to your production bot API URL when deploying
-  # Example for production: botApiUrl = "https://your-bot-api.example.com"
-  botApiUrl = "http://localhost:8080"
+  # Set this to your bot API endpoint (required for /menu/{hash} routes to work)
+  # Example: botApiUrl = "https://your-bot-api.example.com"
+  # Leave empty or unset if you only want to use the default menu at /menu
+  botApiUrl = ""
 
 [menu]
   [[menu.main]]

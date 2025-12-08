@@ -13,7 +13,7 @@
     {{ partial "footer.html" . }}
     <script>
         // Set bot API URL from Hugo config
-        window.BOT_API_URL = {{ .Site.Params.botApiUrl | default "http://localhost:8080" | jsonify }};
+        window.BOT_API_URL = {{ .Site.Params.botApiUrl | default "" | jsonify }};
     </script>
     <script src="{{ "js/menu.js" | relURL }}"></script>
 </body>
