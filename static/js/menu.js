@@ -1,6 +1,6 @@
 // Menu filtering functionality and hash-based routing
 document.addEventListener('DOMContentLoaded', function() {
-    // Check for hash in URL (path-based: /menu/abc123 or query: /menu?hash=abc123)
+    // Check for hash in URL (path-based: /menu/{hash} or query: ?hash=abc123)
     function getHashFromURL() {
         // Check query parameter first
         const urlParams = new URLSearchParams(window.location.search);
@@ -9,18 +9,22 @@ document.addEventListener('DOMContentLoaded', function() {
             return hashParam;
         }
         
-        // Check path segments (e.g., /menu/abc123)
+        // Check for /menu/{hash} pattern (primary format)
         const pathParts = window.location.pathname.split('/').filter(p => p);
         const menuIndex = pathParts.indexOf('menu');
         if (menuIndex !== -1 && pathParts.length > menuIndex + 1) {
-            return pathParts[menuIndex + 1];
+            const hash = pathParts[menuIndex + 1];
+            // Validate it looks like a hash (base64-like, typically 16+ chars)
+            if (hash.length >= 16 && /^[A-Za-z0-9+/=_-]+$/.test(hash)) {
+                return hash;
+            }
         }
         
         return null;
     }
     
     const hash = getHashFromURL();
-    const botApiUrl = window.BOT_API_URL || 'http://localhost:8080'; // Configurable via global variable
+    const botApiUrl = window.BOT_API_URL || ''; // Configurable via Hugo config
     
     // If hash is present, fetch data from bot API
     if (hash) {
@@ -28,6 +32,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const menuDynamic = document.getElementById('menu-dynamic');
         const menuLoading = document.getElementById('menu-loading');
         const menuError = document.getElementById('menu-error');
+        
+        if (!botApiUrl) {
+            // Bot API URL not configured
+            if (menuLoading) menuLoading.style.display = 'none';
+            if (menuError) {
+                menuError.style.display = 'block';
+                menuError.innerHTML = '<p>Error: Bot API URL not configured. Please configure botApiUrl in Hugo config.</p>';
+            }
+            return;
+        }
         
         if (menuStatic) menuStatic.style.display = 'none';
         if (menuLoading) menuLoading.style.display = 'block';
@@ -57,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (menuError) menuError.style.display = 'block';
             });
     } else {
-        // Use static menu, initialize filtering normally
+        // No hash - use static menu (default menu at /menu)
         initializeMenuFiltering();
     }
     

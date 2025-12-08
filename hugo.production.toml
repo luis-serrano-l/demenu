@@ -20,9 +20,10 @@ buildFuture = false
   menuTitle = "Our Menu"
   restaurantName = "Delicious Restaurant"
   tagline = "Fresh ingredients, amazing flavors"
-  # Bot API URL - Set this to your production bot API endpoint
+  # Bot API URL - Set this to your production bot API endpoint (required for /menu/{hash} routes)
   # Example: botApiUrl = "https://your-bot-api.example.com"
-  # If not set, defaults to http://localhost:8080 (development)
+  # If not set, only the default menu at /menu will work
+  botApiUrl = ""
 
 [menu]
   [[menu.main]]
