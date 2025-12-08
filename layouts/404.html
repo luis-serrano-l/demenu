@@ -25,6 +25,21 @@
     <script>
         // Set bot API URL from Hugo config
         window.BOT_API_URL = {{ .Site.Params.botApiUrl | default "" | jsonify }};
+        
+        // Check if this is a menu route that should be handled
+        (function() {
+            const path = window.location.pathname;
+            // If path matches /menu/{hash} pattern, handle it
+            const menuMatch = path.match(/\/menu\/([^\/]+)$/);
+            if (menuMatch) {
+                // This is a menu hash route, the menu.js will handle it
+                return;
+            }
+            // Otherwise, this is a real 404
+            document.getElementById('menu-loading').style.display = 'none';
+            document.getElementById('menu-error').style.display = 'block';
+            document.getElementById('menu-error').innerHTML = '<p>Page not found. If you were looking for a menu, please check your link.</p>';
+        })();
     </script>
     <script src="{{ "js/menu.js" | relURL }}"></script>
 </body>
