@@ -1,11 +1,138 @@
-// Menu filtering functionality
+// Menu filtering functionality and hash-based routing
 document.addEventListener('DOMContentLoaded', function() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const menuCategories = document.querySelectorAll('.menu-category');
-    const sidebar = document.querySelector('.menu-sidebar');
-    const sidebarToggles = document.querySelectorAll('.sidebar-toggle');
-    const sidebarClose = document.querySelector('.sidebar-close');
-    const sidebarOverlay = document.querySelector('.sidebar-overlay');
+    // Check for hash in URL (path-based: /menu/abc123 or query: /menu?hash=abc123)
+    function getHashFromURL() {
+        // Check query parameter first
+        const urlParams = new URLSearchParams(window.location.search);
+        const hashParam = urlParams.get('hash');
+        if (hashParam) {
+            return hashParam;
+        }
+        
+        // Check path segments (e.g., /menu/abc123)
+        const pathParts = window.location.pathname.split('/').filter(p => p);
+        const menuIndex = pathParts.indexOf('menu');
+        if (menuIndex !== -1 && pathParts.length > menuIndex + 1) {
+            return pathParts[menuIndex + 1];
+        }
+        
+        return null;
+    }
+    
+    const hash = getHashFromURL();
+    const botApiUrl = window.BOT_API_URL || 'http://localhost:8080'; // Configurable via global variable
+    
+    // If hash is present, fetch data from bot API
+    if (hash) {
+        const menuStatic = document.getElementById('menu-static');
+        const menuDynamic = document.getElementById('menu-dynamic');
+        const menuLoading = document.getElementById('menu-loading');
+        const menuError = document.getElementById('menu-error');
+        
+        if (menuStatic) menuStatic.style.display = 'none';
+        if (menuLoading) menuLoading.style.display = 'block';
+        
+        const menuUrl = `${botApiUrl}/api/user/${hash}/menu.json`;
+        
+        fetch(menuUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load menu');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (menuLoading) menuLoading.style.display = 'none';
+                if (menuError) menuError.style.display = 'none';
+                
+                // Render menu dynamically
+                renderDynamicMenu(data, menuDynamic);
+                
+                // Initialize filtering after menu is rendered
+                setTimeout(initializeMenuFiltering, 100);
+            })
+            .catch(error => {
+                console.error('Error loading menu:', error);
+                if (menuLoading) menuLoading.style.display = 'none';
+                if (menuError) menuError.style.display = 'block';
+            });
+    } else {
+        // Use static menu, initialize filtering normally
+        initializeMenuFiltering();
+    }
+    
+    function renderDynamicMenu(data, container) {
+        if (!container) return;
+        
+        if (!data.categories || data.categories.length === 0) {
+            container.innerHTML = '<p>No menu data available.</p>';
+            container.style.display = 'block';
+            return;
+        }
+        
+        // Build menu HTML (same structure as static menu)
+        let html = '<div class="menu-container">';
+        
+        // Sidebar with filters
+        html += '<button class="sidebar-toggle sidebar-toggle-external" aria-label="Toggle categories"><span class="toggle-icon">☰</span></button>';
+        html += '<div class="sidebar-overlay"></div>';
+        html += '<div class="menu-sidebar">';
+        html += '<div class="sidebar-header">';
+        html += '<button class="sidebar-toggle sidebar-toggle-internal" aria-label="Toggle categories"><span class="toggle-icon">☰</span></button>';
+        html += '<button class="sidebar-close" aria-label="Close sidebar">×</button>';
+        html += '</div>';
+        html += '<div class="menu-filters">';
+        html += '<button class="filter-btn active" data-category="all">All</button>';
+        
+        data.categories.forEach(category => {
+            html += `<button class="filter-btn" data-category="${escapeHtml(category.id)}">${escapeHtml(category.name)}</button>`;
+        });
+        
+        html += '</div></div>';
+        
+        // Menu content
+        html += '<div class="menu-content"><div class="menu-categories">';
+        
+        data.categories.forEach(category => {
+            html += `<section class="menu-category" data-category="${escapeHtml(category.id)}">`;
+            html += `<h2 class="category-title">${escapeHtml(category.name)}</h2>`;
+            if (category.description) {
+                html += `<p class="category-description">${escapeHtml(category.description)}</p>`;
+            }
+            html += '<div class="menu-items">';
+            
+            category.items.forEach(item => {
+                html += '<div class="menu-item">';
+                html += `<h3 class="item-name">${escapeHtml(item.name)}</h3>`;
+                if (item.description) {
+                    html += `<p class="item-description">${escapeHtml(item.description)}</p>`;
+                }
+                html += `<span class="item-price">$${parseFloat(item.price).toFixed(2)}</span>`;
+                html += '</div>';
+            });
+            
+            html += '</div></section>';
+        });
+        
+        html += '</div></div></div>';
+        
+        container.innerHTML = html;
+        container.style.display = 'block';
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function initializeMenuFiltering() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const menuCategories = document.querySelectorAll('.menu-category');
+        const sidebar = document.querySelector('.menu-sidebar');
+        const sidebarToggles = document.querySelectorAll('.sidebar-toggle');
+        const sidebarClose = document.querySelector('.sidebar-close');
+        const sidebarOverlay = document.querySelector('.sidebar-overlay');
     
     function isMobile() {
         return window.innerWidth <= 768;
@@ -111,10 +238,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Handle window resize
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 768) {
-            closeSidebar();
-        }
-    });
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                closeSidebar();
+            }
+        });
+    }
 });
