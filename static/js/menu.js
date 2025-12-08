@@ -1,6 +1,6 @@
 // Menu filtering functionality and hash-based routing
 document.addEventListener('DOMContentLoaded', function() {
-    // Check for hash in URL (path-based: /menu/abc123 or query: /menu?hash=abc123)
+    // Check for hash in URL (path-based: /hash or /menu/hash or query: ?hash=abc123)
     function getHashFromURL() {
         // Check query parameter first
         const urlParams = new URLSearchParams(window.location.search);
@@ -9,8 +9,25 @@ document.addEventListener('DOMContentLoaded', function() {
             return hashParam;
         }
         
-        // Check path segments (e.g., /menu/abc123)
+        // Check path segments
         const pathParts = window.location.pathname.split('/').filter(p => p);
+        const knownRoutes = ['menu', 'meals', 'categories', 'tags', 'index.html', 'index'];
+        
+        // Check each path part to find a hash
+        // Hash typically looks like base64 (contains =, A-Z, a-z, 0-9, +, /, -)
+        // and is typically 16+ characters
+        for (let i = pathParts.length - 1; i >= 0; i--) {
+            const part = pathParts[i];
+            // Check if it looks like a hash (base64-like, typically 16+ chars and may contain =)
+            if (part.length >= 16 && /^[A-Za-z0-9+/=_-]+$/.test(part)) {
+                // If it's not a known route, treat it as a hash
+                if (!knownRoutes.includes(part.toLowerCase())) {
+                    return part;
+                }
+            }
+        }
+        
+        // Fallback: check for /menu/hash pattern
         const menuIndex = pathParts.indexOf('menu');
         if (menuIndex !== -1 && pathParts.length > menuIndex + 1) {
             return pathParts[menuIndex + 1];
