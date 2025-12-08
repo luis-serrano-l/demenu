@@ -48,14 +48,35 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const menuUrl = `${botApiUrl}/api/user/${hash}/menu.json`;
         
-        fetch(menuUrl)
+        console.log('Fetching menu from:', menuUrl);
+        console.log('Hash:', hash);
+        console.log('Bot API URL:', botApiUrl);
+        
+        // Add timeout to fetch
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        fetch(menuUrl, {
+            signal: controller.signal,
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
             .then(response => {
+                console.log('Response status:', response.status, response.statusText);
                 if (!response.ok) {
-                    throw new Error('Failed to load menu');
+                    // Try to get error message from response
+                    return response.json().then(err => {
+                        throw new Error(err.error || `HTTP ${response.status}: ${response.statusText}`);
+                    }).catch(() => {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    });
                 }
                 return response.json();
             })
             .then(data => {
+                clearTimeout(timeoutId);
+                console.log('Menu data received:', data);
                 if (menuLoading) menuLoading.style.display = 'none';
                 if (menuError) menuError.style.display = 'none';
                 
@@ -66,9 +87,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(initializeMenuFiltering, 100);
             })
             .catch(error => {
+                clearTimeout(timeoutId);
                 console.error('Error loading menu:', error);
                 if (menuLoading) menuLoading.style.display = 'none';
-                if (menuError) menuError.style.display = 'block';
+                if (menuError) {
+                    menuError.style.display = 'block';
+                    let errorMsg = error.message;
+                    if (error.name === 'AbortError') {
+                        errorMsg = 'Request timed out. The bot API may be unreachable.';
+                    }
+                    menuError.innerHTML = `<p><strong>Error loading menu:</strong> ${errorMsg}</p><p>Please check:</p><ul><li>Bot API URL is configured correctly in Hugo config (botApiUrl)</li><li>Bot is running and accessible at: ${botApiUrl}</li><li>You have sent menu JSON via Telegram (use /template to get the format)</li><li>CORS is enabled on the bot server</li></ul><p>Check browser console (F12) for more details.</p>`;
+                }
             });
     } else {
         // No hash - use static menu (default menu at /menu)

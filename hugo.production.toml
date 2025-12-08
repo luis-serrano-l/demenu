@@ -21,9 +21,11 @@ buildFuture = false
   restaurantName = "Delicious Restaurant"
   tagline = "Fresh ingredients, amazing flavors"
   # Bot API URL - Set this to your production bot API endpoint (required for /menu/{hash} routes)
+  # This is the URL where your demenu_bot is running and accessible
   # Example: botApiUrl = "https://your-bot-api.example.com"
-  # If not set, only the default menu at /menu will work
-  botApiUrl = ""
+  # For local development: botApiUrl = "http://localhost:8080"
+  # IMPORTANT: Update this with your actual bot API URL before deploying
+  botApiUrl = "http://localhost:8080"
 
 [menu]
   [[menu.main]]
