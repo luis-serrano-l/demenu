@@ -33,18 +33,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const menuLoading = document.getElementById('menu-loading');
         const menuError = document.getElementById('menu-error');
         
+        // Hide static menu, show loading
+        if (menuStatic) menuStatic.style.display = 'none';
+        if (menuLoading) menuLoading.style.display = 'block';
+        if (menuError) menuError.style.display = 'none';
+        
         if (!botApiUrl) {
             // Bot API URL not configured
             if (menuLoading) menuLoading.style.display = 'none';
             if (menuError) {
                 menuError.style.display = 'block';
-                menuError.innerHTML = '<p>Error: Bot API URL not configured. Please configure botApiUrl in Hugo config.</p>';
+                menuError.innerHTML = '<p><strong>Error:</strong> Bot API URL not configured.</p><p>Please configure <code>botApiUrl</code> in your Hugo config file.</p>';
             }
             return;
         }
-        
-        if (menuStatic) menuStatic.style.display = 'none';
-        if (menuLoading) menuLoading.style.display = 'block';
         
         const menuUrl = `${botApiUrl}/api/user/${hash}/menu.json`;
         
@@ -52,17 +54,22 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Hash:', hash);
         console.log('Bot API URL:', botApiUrl);
         
-        // Add timeout to fetch
+        // Add timeout to fetch (3 seconds for faster feedback)
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        const timeoutId = setTimeout(() => {
+            console.log('Request timeout - aborting fetch');
+            controller.abort();
+        }, 3000); // 3 second timeout
         
         fetch(menuUrl, {
             signal: controller.signal,
             headers: {
                 'Accept': 'application/json',
-            }
+            },
+            mode: 'cors'
         })
             .then(response => {
+                clearTimeout(timeoutId);
                 console.log('Response status:', response.status, response.statusText);
                 if (!response.ok) {
                     // Try to get error message from response
@@ -75,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(data => {
-                clearTimeout(timeoutId);
                 console.log('Menu data received:', data);
                 if (menuLoading) menuLoading.style.display = 'none';
                 if (menuError) menuError.style.display = 'none';
@@ -94,9 +100,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     menuError.style.display = 'block';
                     let errorMsg = error.message;
                     if (error.name === 'AbortError') {
-                        errorMsg = 'Request timed out. The bot API may be unreachable.';
+                        errorMsg = 'Request timed out after 5 seconds.';
+                    } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                        errorMsg = 'Cannot connect to bot API. The bot may not be running or accessible.';
                     }
-                    menuError.innerHTML = `<p><strong>Error loading menu:</strong> ${errorMsg}</p><p>Please check:</p><ul><li>Bot API URL is configured correctly in Hugo config (botApiUrl)</li><li>Bot is running and accessible at: ${botApiUrl}</li><li>You have sent menu JSON via Telegram (use /template to get the format)</li><li>CORS is enabled on the bot server</li></ul><p>Check browser console (F12) for more details.</p>`;
+                    menuError.innerHTML = `<p><strong>Error loading menu:</strong> ${errorMsg}</p><p><strong>Details:</strong></p><ul><li>Bot API URL: <code>${botApiUrl || 'Not configured'}</code></li><li>Request URL: <code>${menuUrl}</code></li><li>Hash: <code>${hash}</code></li></ul><p><strong>For GitHub Pages:</strong> The bot API must be publicly accessible. <code>localhost:8080</code> will not work.</p><p>Check browser console (F12) for more details.</p>`;
                 }
             });
     } else {
