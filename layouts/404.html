@@ -24,7 +24,7 @@
     {{ partial "footer.html" . }}
     <script>
         // Set bot API URL from Hugo config
-        window.BOT_API_URL = {{ .Site.Params.botApiUrl | default "" | jsonify }};
+        window.BOT_API_URL = {{ if .Site.Params.botApiUrl }}"{{ .Site.Params.botApiUrl }}"{{ else }}""{{ end }};
         
         // Check if this is a menu route - if not, show 404 immediately
         (function() {
