@@ -50,9 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const menuUrl = `${botApiUrl}/api/user/${hash}/menu.json`;
         
-        console.log('Fetching menu from:', menuUrl);
-        console.log('Hash:', hash);
-        console.log('Bot API URL:', botApiUrl);
+        // Log to console for debugging (not exposed to users)
+        console.log('Fetching menu data...');
         
         // Add timeout to fetch (3 seconds for faster feedback)
         const controller = new AbortController();
@@ -70,19 +69,17 @@ document.addEventListener('DOMContentLoaded', function() {
         })
             .then(response => {
                 clearTimeout(timeoutId);
-                console.log('Response status:', response.status, response.statusText);
                 if (!response.ok) {
-                    // Try to get error message from response
-                    return response.json().then(err => {
-                        throw new Error(err.error || `HTTP ${response.status}: ${response.statusText}`);
-                    }).catch(() => {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    });
+                    // Don't expose HTTP status details to users
+                    if (response.status === 404) {
+                        throw new Error('NOT_FOUND');
+                    }
+                    throw new Error('SERVER_ERROR');
                 }
                 return response.json();
             })
             .then(data => {
-                console.log('Menu data received:', data);
+                console.log('Menu loaded successfully');
                 if (menuLoading) menuLoading.style.display = 'none';
                 if (menuError) menuError.style.display = 'none';
                 
@@ -94,17 +91,22 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 clearTimeout(timeoutId);
+                // Log error details to console for debugging (not exposed to users)
                 console.error('Error loading menu:', error);
                 if (menuLoading) menuLoading.style.display = 'none';
                 if (menuError) {
                     menuError.style.display = 'block';
-                    let errorMsg = error.message;
+                    let errorMsg = 'Unable to load menu. Please check your link and try again.';
                     if (error.name === 'AbortError') {
-                        errorMsg = 'Request timed out after 5 seconds.';
+                        errorMsg = 'Request timed out. Please try again.';
+                    } else if (error.message === 'NOT_FOUND') {
+                        errorMsg = 'Menu not found. Please check your link.';
+                    } else if (error.message === 'SERVER_ERROR') {
+                        errorMsg = 'Unable to load menu. Please try again later.';
                     } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                        errorMsg = 'Cannot connect to bot API. The bot may not be running or accessible.';
+                        errorMsg = 'Unable to connect. Please try again later.';
                     }
-                    menuError.innerHTML = `<p><strong>Error loading menu:</strong> ${errorMsg}</p><p><strong>Details:</strong></p><ul><li>Bot API URL: <code>${botApiUrl || 'Not configured'}</code></li><li>Request URL: <code>${menuUrl}</code></li><li>Hash: <code>${hash}</code></li></ul><p><strong>For GitHub Pages:</strong> The bot API must be publicly accessible. <code>localhost:8080</code> will not work.</p><p>Check browser console (F12) for more details.</p>`;
+                    menuError.innerHTML = `<p><strong>Error loading menu:</strong> ${errorMsg}</p>`;
                 }
             });
     } else {
