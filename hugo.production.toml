@@ -25,7 +25,8 @@ buildFuture = false
   # Example: botApiUrl = "https://your-bot-api.example.com"
   # For local development: botApiUrl = "http://localhost:8080"
   # IMPORTANT: Update this with your actual bot API URL before deploying
-  botApiUrl = "https://exchanges-restaurants-pulled-units.trycloudflare.com"
+  # The endpoint should be publicly accessible and serve JSON at /api/user/:hash/menu.json
+  botApiUrl = "https://demenubot-production.up.railway.app"
 
 [menu]
   [[menu.main]]
