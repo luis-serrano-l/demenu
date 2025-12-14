@@ -27,15 +27,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const hash = getHashFromURL();
     const botApiUrl = window.BOT_API_URL || ''; // Configurable via Hugo config
     
-    // If hash is present, fetch data from bot API
+    // If hash is present, fetch data from bot API (NOT from static menu.json)
     if (hash) {
         const menuStatic = document.getElementById('menu-static');
         const menuDynamic = document.getElementById('menu-dynamic');
         const menuLoading = document.getElementById('menu-loading');
         const menuError = document.getElementById('menu-error');
         
-        // Hide static menu, show loading
-        if (menuStatic) menuStatic.style.display = 'none';
+        // Hide static menu (if it exists) - we don't want to load static menu.json when hash is present
+        // Show loading state instead
+        if (menuStatic) {
+            menuStatic.style.display = 'none';
+            // Clear any content to prevent static menu from being processed
+            menuStatic.innerHTML = '';
+        }
         if (menuLoading) menuLoading.style.display = 'block';
         if (menuError) menuError.style.display = 'none';
         
@@ -122,6 +127,17 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     } else {
         // No hash - use static menu (default menu at /menu)
+        // Make sure static menu is visible
+        const menuStatic = document.getElementById('menu-static');
+        if (menuStatic) {
+            menuStatic.style.display = 'block';
+        }
+        // Hide loading and error elements
+        const menuLoading = document.getElementById('menu-loading');
+        const menuError = document.getElementById('menu-error');
+        if (menuLoading) menuLoading.style.display = 'none';
+        if (menuError) menuError.style.display = 'none';
+        // Initialize filtering for static menu
         initializeMenuFiltering();
     }
     

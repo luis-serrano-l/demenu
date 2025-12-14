@@ -15,9 +15,8 @@
             <div id="menu-error" style="display: none; text-align: center; padding: 2rem; color: red;">
                 <p>Error loading menu. Please check your link.</p>
             </div>
-            <div id="menu-static" style="display: none;">
-                {{ partial "menu.html" . }}
-            </div>
+            {{- /* 404 page - don't render static menu, only show dynamic menu if hash is present */}}
+            <div id="menu-static" style="display: none;"></div>
             <div id="menu-dynamic" style="display: none;"></div>
         </div>
     </main>
