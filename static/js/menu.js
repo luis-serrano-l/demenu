@@ -14,8 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const menuIndex = pathParts.indexOf('menu');
         if (menuIndex !== -1 && pathParts.length > menuIndex + 1) {
             const hash = pathParts[menuIndex + 1];
-            // Validate it looks like a hash (base64-like, typically 16+ chars)
-            if (hash.length >= 16 && /^[A-Za-z0-9+/=_-]+$/.test(hash)) {
+            // Validate it looks like a hash (Base62 encoding, 13+ chars)
+            // Base62 uses A-Za-z0-9 characters
+            if (hash.length >= 13 && /^[A-Za-z0-9]+$/.test(hash)) {
                 return hash;
             }
         }
@@ -52,13 +53,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Log to console for debugging (not exposed to users)
         console.log('Fetching menu data...');
+        console.log('Hash:', hash);
+        console.log('Bot API URL:', botApiUrl);
+        console.log('Full URL:', menuUrl);
         
-        // Add timeout to fetch (3 seconds for faster feedback)
+        // Add timeout to fetch (10 seconds for better reliability)
         const controller = new AbortController();
         const timeoutId = setTimeout(() => {
-            console.log('Request timeout - aborting fetch');
+            console.log('Request timeout - aborting fetch after 10 seconds');
             controller.abort();
-        }, 3000); // 3 second timeout
+        }, 10000); // 10 second timeout
         
         fetch(menuUrl, {
             signal: controller.signal,
@@ -69,7 +73,11 @@ document.addEventListener('DOMContentLoaded', function() {
         })
             .then(response => {
                 clearTimeout(timeoutId);
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
                 if (!response.ok) {
+                    // Log full error details for debugging
+                    console.error('Response not OK:', response.status, response.statusText);
                     // Don't expose HTTP status details to users
                     if (response.status === 404) {
                         throw new Error('NOT_FOUND');
@@ -93,6 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 clearTimeout(timeoutId);
                 // Log error details to console for debugging (not exposed to users)
                 console.error('Error loading menu:', error);
+                console.error('Error name:', error.name);
+                console.error('Error message:', error.message);
+                console.error('Error stack:', error.stack);
                 if (menuLoading) menuLoading.style.display = 'none';
                 if (menuError) {
                     menuError.style.display = 'block';
@@ -106,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
                         errorMsg = 'Unable to connect. Please try again later.';
                     }
-                    menuError.innerHTML = `<p><strong>Error loading menu:</strong> ${errorMsg}</p>`;
+                    menuError.innerHTML = `<p><strong>Error loading menu:</strong> ${errorMsg}</p><p style="font-size: 0.9em; color: #666;">Check browser console (F12) for details.</p>`;
                 }
             });
     } else {
